@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<llibre id="001">
+    <autor>Joan Pla</autor>
+    <anyPublicacio>1998</anyPublicacio>
+    <editorial>Edicions Mar</editorial>
+    <genere>Aventura</genere>
+    <pagines>320</pagines>
+    <disponible>true</disponible>
+</llibre>
