@@ -1,12 +1,10 @@
 import java.io.File;
 import java.util.Scanner;
 
-import javax.swing.text.html.parser.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
@@ -35,7 +33,7 @@ public class PR142Main {
             System.out.println(
                     "0)Llistar ids de cursos." +
                             "\n1)Llistar tutors." +
-                            "\n2)Llistar alumnes." +
+                            "\n2)Llistar tots els alumnes." +
                             "\n3)Mostrar ids i titols dels mòduls a partir d'un id de curs." +
                             "\n4)Llistar alumnes d'un curs." +
                             "\n5)Afegir un alumne a un curs." +
@@ -48,13 +46,16 @@ public class PR142Main {
                     llistaridcursos(doc);
                     break;
                 case 1:
-                    /* Funcion */break;
+                    llistartutors(doc);
+                    break;
                 case 2:
-                    /* Funcion */break;
+                    llistarallalumns(doc);
+                    break;
                 case 3:
                     /* Funcion */break;
                 case 4:
-                    /* Funcion */break;
+                    llistaralumnes(doc);
+                    break;
                 case 5:
                     /* Funcion */break;
                 case 6:
@@ -73,13 +74,51 @@ public class PR142Main {
     static void llistaridcursos(Document doc) throws Exception {
         String expresion = "/cursos/curs/@id";
         NodeList listdecursos = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
-        System.out.println("Hi ha "+ listdecursos.getLength()+" cursos");
+        System.out.println("Hi ha " + listdecursos.getLength() + " cursos");
         for (int i = 0; i < listdecursos.getLength(); i++) {
-            String cursonombre = listdecursos.item(i)+"";
-            System.out.println("Curs "+ cursonombre.replaceAll("[id=\"\"]", ""));
+            String cursonombre = listdecursos.item(i) + "";
+            System.out.println("Curs " + cursonombre.replaceAll("[id=\"\"]", ""));
         }
         System.out.println();
     }
 
-    
+    static void llistarallalumns(Document doc) throws Exception {
+        String expresion = "//alumne/text()";
+        NodeList listdecursos = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
+        System.out.println("Hi ha " + listdecursos.getLength() + " alumnes");
+        for (int i = 0; i < listdecursos.getLength(); i++) {
+            String alumne = listdecursos.item(i).getTextContent();
+            System.out.println("alumne: " + alumne);
+        }
+        System.out.println();
+    }
+
+    static void llistartutors(Document doc) throws Exception {
+        String expresion = "//curs/tutor/text() | //curs/@id";
+        NodeList listadetutores = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
+        for (int i = 0; i < listadetutores.getLength(); i++) {
+            if (listadetutores.item(i).getNodeType() == 2) {
+                String cursonombre = listadetutores.item(i) + "";
+                System.out.print("Curso " + cursonombre.replaceAll("[id=\"\"]", "") + "\n   nombre de tutor: ");
+            } else {
+                System.out.print(listadetutores.item(i).getTextContent() + "\n");
+            }
+        }
+        System.out.println();
+    }
+
+    static void llistaralumnes(Document doc) throws Exception {
+        String expresion = "//curs/alumnes/alumne/text() | //curs/@id";
+        NodeList listadetutores = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
+        for (int i = 0; i < listadetutores.getLength(); i++) {
+            if (listadetutores.item(i).getNodeType() == 2) {
+                String cursonombre = listadetutores.item(i) + "";
+                System.out.print("Curso " + cursonombre.replaceAll("[id=\"\"]", "") + "\n   nombre de alumnos: \n");
+            } else {
+                System.out.print("      " + listadetutores.item(i).getTextContent() + "\n");
+            }
+        }
+        System.out.println();
+    }
+
 }
