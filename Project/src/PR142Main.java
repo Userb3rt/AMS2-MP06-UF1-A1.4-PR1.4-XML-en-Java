@@ -156,8 +156,6 @@ public class PR142Main {
         String nomnouestudiant;
         String cognomnouestudiant;
         String nomcomplet;
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath xpath = xpathFactory.newXPath();
         String expresion = "/cursos/curs/@id";
         Element newalumne = doc.createElement("alumne");
 
@@ -175,7 +173,7 @@ public class PR142Main {
         String nomcurs = listdecursos.item(opcio) + "";
         nomcurs = nomcurs.replaceAll("[id=\"\"]", "");
         expresion = "//curs[@id=\"" + nomcurs + "\"]//alumnes";
-        Node alumnos = (Node) xpath.evaluate(expresion, doc, XPathConstants.NODE);
+        Node alumnos = (Node) xPath.evaluate(expresion, doc, XPathConstants.NODE);
         newalumne.setTextContent(nomcomplet);
         alumnos.appendChild(newalumne);
         write("Project/src/myFiles/cursos.xml", doc);
@@ -188,6 +186,19 @@ public class PR142Main {
         NodeList listdecursos = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
         opciondecurso(listdecursos);
         int opcio = sc.nextInt();
+        expresion = "//curs[@id=\"AMS2\"]//alumne";
+        NodeList listaalumnes = (NodeList) xPath.compile(expresion).evaluate(doc, XPathConstants.NODESET);
+        System.out.println("\nQue alumno quieres eliminar?\n");
+        for (int i = 0; i < listaalumnes.getLength(); i++) {
+            System.out.println(i + ") " + listaalumnes.item(i).getTextContent());
+        }
+        System.out.print("-->");
+        opcio = sc.nextInt();
+        Node alumneeliminar = (Node) listaalumnes.item(opcio);
+        Node alumnes = alumneeliminar.getParentNode();
+        alumnes.removeChild(alumneeliminar);
+        write("Project/src/myFiles/cursos.xml", doc);
+        System.out.println("\nEliminat.\n");
     }
 
     static void opciondecurso(NodeList listdecursos) {
